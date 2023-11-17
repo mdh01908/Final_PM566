@@ -1,5 +1,10 @@
 ---
 title: "Final Project Data Science (PM566)"
+author: "Michelle Hernandez"
+output: 
+    html_document:
+        toc: TRUE
+        toc_float: TRUE
 ---
 
 This is a Quarto website.
