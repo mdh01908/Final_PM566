@@ -1,0 +1,248 @@
+---
+title: "more testing"
+format: html
+editor: visual
+---
+
+```{r}
+
+# Stacked bar chart for "Annual Income" and "Interest_Label"
+plot1 <- ggplot(data = dat, aes(x = AnnualIncome_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Annual Income") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Income") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "Education" and "Interest_Label"
+plot2 <- ggplot(data = dat, aes(x = Ed_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Education Level") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Education Level") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "EnglishProf_Label" and "Interest_Label"
+plot3 <- ggplot(data = dat, aes(x = EnglishProf_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("English Proficiency Label") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by English Proficiency") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "HelpMedLit_Label" and "Interest_Label"
+plot4 <- ggplot(data = dat, aes(x = HelpMedLit_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Help with Medical Literacy Label") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Help Understanding Medical Literature") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+
+combined_plot <- subplot(
+  plotly::ggplotly(plot1),
+  plotly::ggplotly(plot2),
+  plotly::ggplotly(plot3),
+  plotly::ggplotly(plot4),
+  nrows = 2, 
+  titleX = TRUE,
+  titleY = TRUE
+)
+
+
+combined_plot
+
+```
+
+```{r}
+
+# Stacked bar chart for "Annual Income" and "Interest_Label"
+barp <- ggplot(data = dat, aes(x = AnnualIncome_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Annual Income") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Income") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "Education" and "Interest_Label"
+plot2 <- ggplot(data = dat, aes(x = Ed_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Education Level") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Education Level") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "EnglishProf_Label" and "Interest_Label"
+plot3 <- ggplot(data = dat, aes(x = EnglishProf_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("English Proficiency Label") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by English Proficiency") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "HelpMedLit_Label" and "Interest_Label"
+plot4 <- ggplot(data = dat, aes(x = HelpMedLit_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Help with Medical Literacy Label") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Help Understanding Medical Literature") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+    legend.position = "none") +
+  guides(fill = FALSE) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+
+combined_plot <- subplot(
+  plotly::ggplotly(barp),
+  plotly::ggplotly(plot2),
+  plotly::ggplotly(plot3),
+  plotly::ggplotly(plot4),
+  nrows = 2, 
+  titleX = TRUE,
+  titleY = TRUE
+)
+
+
+
+combined_plot
+
+```
+
+```{r}
+library(ggplot2)
+library(plotly)
+
+# Assuming plot1, plot2, plot3, and plot4 are already defined as ggplot objects
+
+# Convert ggplot objects to plotly
+plotly_plot1 <- ggplotly(plot1)
+plotly_plot2 <- ggplotly(plot2)
+plotly_plot3 <- ggplotly(plot3)
+plotly_plot4 <- ggplotly(plot4)
+
+# Store plotly plots in a list
+plotly_plots <- list(plotly_plot1, plotly_plot2, plotly_plot3, plotly_plot4)
+
+# Create initial plotly figure with the first plot
+fig <- plotly_plots[[1]]
+
+# Set up the dropdown menu to switch between plots
+buttons <- list(
+  list(
+    method = "restyle",
+    args = list("visible", list(TRUE, FALSE, FALSE, FALSE)),
+    label = "Plot 1"
+  ),
+  list(
+    method = "restyle",
+    args = list("visible", list(FALSE, TRUE, FALSE, FALSE)),
+    label = "Plot 2"
+  ),
+  list(
+    method = "restyle",
+    args = list("visible", list(FALSE, FALSE, TRUE, FALSE)),
+    label = "Plot 3"
+  ),
+  list(
+    method = "restyle",
+    args = list("visible", list(FALSE, FALSE, FALSE, TRUE)),
+    label = "Plot 4"
+  )
+)
+
+fig <- fig %>% layout(
+  title = "Drop down menus - Plot type",
+  xaxis = list(domain = c(0.1, 1)),
+  yaxis = list(title = "y"),
+  updatemenus = list(
+    list(
+      buttons = buttons
+    )
+  )
+)
+
+fig
+
+
+
+
+```
+
+```{r}
+library(ggplot2)
+library(plotly)
+
+# Assuming plot1, plot2, plot3, and plot4 are already defined as ggplot objects
+
+# Convert ggplot objects to plotly
+plotly_plot1 <- ggplotly(plot1)
+plotly_plot2 <- ggplotly(plot2)
+plotly_plot3 <- ggplotly(plot3)
+plotly_plot4 <- ggplotly(plot4)
+
+# Store plotly plots in a list
+plotly_plots <- list(plotly_plot1, plotly_plot2, plotly_plot3, plotly_plot4)
+
+# Create initial plotly figure with the first plot
+fig <- plotly_plots[[1]]
+
+# Set up the dropdown menu to switch between plots
+fig <- fig %>% layout(
+  title = "Drop down menus - Plot type",
+  xaxis = list(domain = c(0.1, 1)),
+  yaxis = list(title = "y"),
+  updatemenus = list(
+    list(
+      y = 0.8,
+      buttons = list(
+        list(
+          method = "restyle",
+          args = list("visible", list(TRUE, FALSE, FALSE, FALSE)),
+          label = "Plot 1"
+        ),
+        list(
+          method = "restyle",
+          args = list("visible", list(FALSE, TRUE, FALSE, FALSE)),
+          label = "Plot 2"
+        ),
+        list(
+          method = "restyle",
+          args = list("visible", list(FALSE, FALSE, TRUE, FALSE)),
+          label = "Plot 3"
+        ),
+        list(
+          method = "restyle",
+          args = list("visible", list(FALSE, FALSE, FALSE, TRUE)),
+          label = "Plot 4"
+        )
+      )
+    )
+  )
+)
+
+fig
+
+```

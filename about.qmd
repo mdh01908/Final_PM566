@@ -1,9 +1,29 @@
 ---
-title: "About"
+title: "PDF Link to Report"
+output: html_document
 ---
 
 About this site
 
 ```{r}
-1 + 1
+pdf_path <- "/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf"
+cat(sprintf('<a href="%s">Download PDF</a>', pdf_path))
+```
+
+```{r, results='asis'}
+pdf_path <- "/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf"
+cat(sprintf('<a href="%s" download>Download PDF</a>', pdf_path))
+
+```
+
+```{r}
+pdf_filename <- "report.pdf"
+pdf_path <- paste0(getwd(), "/", pdf_filename)
+cat(sprintf('<a href="%s">Download PDF</a>', pdf_path))
+
+#/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf
+
+#[Download PDF](report.pdf)
+
+
 ```

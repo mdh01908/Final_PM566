@@ -4,13 +4,13 @@
     "href": "index.html",
     "title": "Final Project Data Science (PM566)",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\nFigure 1.\nThis is an interactive table of the relevant variables used in the analysis, for all subjects.\n\n\n\n\n\n\n\n\n\nFigure 2.\ninteractive barplot\n\n\n\n\n\n\n\n\nFigure 3.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.\nThis an interactive map of interest level by state."
   },
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "PDF Link to Report",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "About this site\n\npdf_path &lt;- \"/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf\"\ncat(sprintf('&lt;a href=\"%s\"&gt;Download PDF&lt;/a&gt;', pdf_path))\n\n&lt;a href=\"/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf\"&gt;Download PDF&lt;/a&gt;\n\n\npdf_path &lt;- \"/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf\"\ncat(sprintf('&lt;a href=\"%s\" download&gt;Download PDF&lt;/a&gt;', pdf_path))\nDownload PDF\n\npdf_filename &lt;- \"report.pdf\"\npdf_path &lt;- paste0(getwd(), \"/\", pdf_filename)\ncat(sprintf('&lt;a href=\"%s\"&gt;Download PDF&lt;/a&gt;', pdf_path))\n\n&lt;a href=\"/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf\"&gt;Download PDF&lt;/a&gt;\n\n#/Users/michellehernandez/Desktop/Final_Proj_DataSci/Final_PM566/report.pdf\n\n#[Download PDF](report.pdf)"
   }
 ]

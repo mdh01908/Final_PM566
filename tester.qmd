@@ -1,0 +1,553 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+
+# Stacked bar chart for "Annual Income" and "Interest_Label"
+barp <- ggplot(data = dat, aes(x = AnnualIncome_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Annual Income") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Income") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "Education" and "Interest_Label"
+plot2 <- ggplot(data = dat, aes(x = Ed_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Education Level") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Education Level") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "EnglishProf_Label" and "Interest_Label"
+plot3 <- ggplot(data = dat, aes(x = EnglishProf_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("English Proficiency Label") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by English Proficiency") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+# Stacked bar chart for "HelpMedLit_Label" and "Interest_Label"
+plot4 <- ggplot(data = dat, aes(x = HelpMedLit_Label, fill = interest_Label)) +
+  geom_bar(position = "fill") +
+  xlab("Help with Medical Literacy Label") +
+  ylab("Proportion") +
+  ggtitle("Proportional Interest in Clinical Trials by Help Understanding Medical Literature") +
+  labs(fill = "Clinical Trial Interest Level") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("khaki2", "lemonchiffon1", "#DADAEB", "#9E9AC8", "#6A51A3"))
+
+plot2$x$data[[1]]$showlegend <- FALSE
+plot3$x$data[[1]]$showlegend <- FALSE
+plot4$x$data[[1]]$showlegend <- FALSE
+
+combined_plot <- subplot(
+  plotly::ggplotly(barp),
+  plotly::ggplotly(plot2),
+  plotly::ggplotly(plot3),
+  plotly::ggplotly(plot4),
+  nrows = 2, 
+  titleX = TRUE,
+  titleY = TRUE
+)
+
+
+combined_plot
+
+```
+
+this works to add state names but the income isnt showing up
+
+```{r}
+# Calculate weighted average income and interest
+state_avg_income <- stateData %>%
+  group_by(State) %>%
+  summarize(
+    total_people = n(),          
+    weighted_avg_income = sum(AnnualIncome) / total_people  
+  )
+
+state_avg_interest <- stateData %>%
+  group_by(State) %>%
+  summarize(
+    total_people = n(),          
+    weighted_avg_interest = sum(interest) / total_people  
+  )
+
+# Merge calculated averages into the data
+final_data <- left_join(stateData, state_avg_income, by = "State")
+final_data <- left_join(final_data, state_avg_interest, by = "State")
+
+
+```
+
+```{r}
+
+gg <- ggplot() +
+  geom_polygon(
+    data = final_data,
+    mapping = aes(x = long, y = lat, group = group, fill = weighted_avg_interest),
+    color = "grey50"
+  ) +
+  scale_fill_gradientn(
+    name = "Interest Level",
+    colors = rev(terrain.colors(100))
+  ) +
+  coord_map() +
+  theme_classic() +
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    legend.title = element_text(size = 10),
+    plot.title = element_text(size = 12)
+  ) +
+  ggtitle("Average Interest in Clinical Trial Level (0=Not all Interested, 5=Very Interested) by State")
+
+# Convert ggplot to plotly
+conv <-ggplotly(gg)
+
+
+# Adding text information for hover
+final_data$text <- paste("State: ", final_data$region, "<br>",
+                         "Income: ", final_data$weighted_avg_income, "<br>",
+                         "Interest Level: ", final_data$weighted_avg_interest)
+
+# Create the ggplot object with text aesthetic
+gg <- ggplot() +
+  geom_polygon(
+    data = final_data,
+    mapping = aes(x = long, y = lat, group = group, fill = weighted_avg_interest, text = text),
+    color = "grey50"
+  ) +
+  scale_fill_gradientn(
+    name = "Interest Level",
+    colors = rev(terrain.colors(100))
+  ) +
+  coord_map() +
+  theme_classic() +
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    legend.title = element_text(size = 10),
+    plot.title = element_text(size = 12)
+  ) +
+  ggtitle("Average Interest in Clinical Trial Level (0=Not all Interested, 5=Very Interested) by State")
+
+# Convert ggplot to plotly
+plotly_gg <- ggplotly(gg, tooltip = "text")
+
+plotly_gg
+
+```
+
+```{r}
+gg <- ggplot() +
+  geom_polygon(
+    data = final_data,
+    mapping = aes(x = long, y = lat, group = group, fill = weighted_avg_interest),
+    color = "grey50"
+  ) +
+  scale_fill_gradientn(
+    name = "Interest Level",
+    colors = rev(terrain.colors(100))
+  ) +
+  coord_map() +
+  theme_classic() +
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    legend.title = element_text(size = 10),
+    plot.title = element_text(size = 12)
+  ) +
+  ggtitle("Average Interest in Clinical Trial Level (0=Not all Interested, 5=Very Interested) by State")
+
+# Convert ggplot to plotly
+conv <-ggplotly(gg)
+
+final_data$text_interest <- paste("State: ", final_data$region, "<br>",
+                                  "Interest Level: ", final_data$weighted_avg_interest)
+
+# Create the ggplot object with text aesthetic for interest level
+gg_interest <- ggplot() +
+  geom_polygon(
+    data = final_data,
+    mapping = aes(x = long, y = lat, group = group, fill = weighted_avg_interest, text = text_interest),
+    color = "grey50"
+  ) +
+  scale_fill_gradientn(
+    name = "Interest Level",
+    colors = rev(terrain.colors(100))
+  ) +
+  coord_map() +
+  theme_classic() +
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    legend.title = element_text(size = 10),
+    plot.title = element_text(size = 12)
+  ) +
+  ggtitle("Average Interest in Clinical Trial Level (0=Not all Interested, 5=Very Interested) by State")
+
+# Your existing code to convert ggplot to plotly for interest level
+plotly_gg_interest <- ggplotly(gg_interest, tooltip = "text")
+
+# Adding text information for hover (income level)
+final_data$text_income <- paste("State: ", final_data$region, "<br>",
+                                "Income: ", final_data$weighted_avg_income)
+
+# Create the ggplot object with text aesthetic for income level
+gg_income <- ggplot() +
+  geom_polygon(
+    data = final_data,
+    mapping = aes(x = long, y = lat, group = group, fill = weighted_avg_income, text = text_income),
+    color = "grey50"
+  ) +
+  scale_fill_gradientn(
+    name = "Income Level",
+    colors = rev(terrain.colors(100))
+  ) +
+  coord_map() +
+  theme_classic() +
+  theme(
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank(),
+    legend.title = element_text(size = 10),
+    plot.title = element_text(size = 12)
+  ) +
+  ggtitle("Average Income Level by State")
+
+# Your existing code to convert ggplot to plotly for income level
+plotly_gg_income <- ggplotly(gg_income, tooltip = "text")
+
+# Create buttons for toggling between interest and income levels
+toggle_buttons <- list(
+  list(method = "restyle",
+       args = list("visible", list(TRUE, FALSE)),
+       label = "Interest Level"),
+  list(method = "restyle",
+       args = list("visible", list(FALSE, TRUE)),
+       label = "Income Level")
+)
+
+# Combine both plots and buttons
+combined_plot <- subplot(
+  plotly_gg_interest, plotly_gg_income,
+  nrows = 2, titleX = TRUE, titleY = TRUE,
+  shareX = TRUE, shareY = TRUE,
+  which_layout = "merge"
+)
+
+combined_plot <- layout(
+  combined_plot,
+  updatemenus = list(
+    list(
+      x = 0.5, y = 1.2,
+      buttons = toggle_buttons
+    )
+  )
+)
+
+combined_plot
+
+
+
+
+
+
+
+```
+
+```{r}
+library(ggplot2)
+library(plotly)
+
+# Assuming final_data is your dataset
+
+# Function to create plotly objects for interest and income levels
+create_plotly_map <- function(data, fill_var, title, tooltip_var) {
+  gg <- ggplot(data) +
+    geom_polygon(
+      mapping = aes(x = long, y = lat, group = group, fill = !!sym(fill_var), text = !!sym(tooltip_var)),
+      color = "grey50"
+    ) +
+    scale_fill_gradientn(
+      name = title,
+      colors = rev(terrain.colors(100))
+    ) +
+    coord_map() +
+    theme_classic() +
+    theme(
+      axis.ticks = element_blank(),
+      axis.text = element_blank(),
+      legend.title = element_text(size = 10),
+      plot.title = element_text(size = 12)
+    ) +
+    ggtitle(title)
+  
+  gg_plotly <- ggplotly(gg, tooltip = "text")
+  return(gg_plotly)
+}
+
+# Create plotly objects for interest and income levels
+plotly_interest_map <- create_plotly_map(final_data, "weighted_avg_interest", "Interest Level", "text_interest")
+plotly_income_map <- create_plotly_map(final_data, "weighted_avg_income", "Income Level", "text_income")
+
+# Display the interest level map
+plotly_interest_map
+
+# Display the income level map
+plotly_income_map
+
+```
+
+```{r}
+library(ggplot2)
+library(plotly)
+
+# Assuming final_data is your dataset
+
+# Function to create plotly objects for interest and income levels
+create_plotly_map <- function(data, fill_var, title, tooltip_var) {
+  gg <- ggplot(data) +
+    geom_polygon(
+      mapping = aes(x = long, y = lat, group = group, fill = !!sym(fill_var), text = !!sym(tooltip_var)),
+      color = "grey50"
+    ) +
+    scale_fill_gradientn(
+      name = title,
+      colors = rev(terrain.colors(100))
+    ) +
+    coord_map() +
+    theme_classic() +
+    theme(
+      axis.ticks = element_blank(),
+      axis.text = element_blank(),
+      legend.title = element_text(size = 10),
+      plot.title = element_text(size = 12)
+    ) +
+    ggtitle(title)
+  
+  gg_plotly <- ggplotly(gg, tooltip = "text")
+  return(gg_plotly)
+}
+
+# Create plotly objects for interest and income levels
+plotly_interest_map <- create_plotly_map(final_data, "weighted_avg_interest", "Interest Level", "text_interest")
+plotly_income_map <- create_plotly_map(final_data, "weighted_avg_income", "Income Level", "text_income")
+
+# Create buttons for toggling between interest and income level maps
+toggle_buttons <- list(
+  list(method = "restyle",
+       args = list("visible", list(TRUE, FALSE)),
+       label = "Interest Level"),
+  list(method = "restyle",
+       args = list("visible", list(FALSE, TRUE)),
+       label = "Income Level")
+)
+
+# Combine both maps and buttons
+combined_plot <- plotly_interest_map %>%
+  layout(
+    updatemenus = list(
+      list(
+        x = 0.5, y = 1.2,
+        buttons = toggle_buttons
+      )
+    )
+  )
+
+# Update plotly object with income level data
+combined_plot <- plotly::add_trace(combined_plot, data = plotly_income_map$data[[1]])
+
+combined_plot
+
+
+```
+
+```{r}
+benefits_ed = table(dat$Benefit_Label, dat$Ed_Label)
+super <- superheat(benefits_ed,scale=TRUE, heat.col.scheme = "viridis",title = "Perceived Benefits of Trials by Education Level", title.size = 3, bottom.label.text.size = 2, bottom.label.text.angle = 90, left.label.text.size = 3)
+plotly(super)
+```
+
+```{r}
+library(viridis)
+benefits_income = table(dat$Benefit_Label, dat$AnnualIncome_Label)
+
+plot <- plot_ly(z = as.matrix(benefits_income),
+                colors = viridis(255),
+                type = "heatmap",
+                x = colnames(benefits_income),
+                y = rownames(benefits_income))
+
+plot <- plot %>% layout(
+  title = "Perceived Benefits of Trials by Annual Income Group",
+  xaxis = list(title = "Annual Income Group"),
+  yaxis = list(title = "Perceived Benefits")
+)
+plot
+
+
+benefits_gender = table(dat$Benefit_Label, dat$Gender_Label)
+benefits_ed = table(dat$Benefit_Label, dat$Ed_Label)
+benefits_eng = table(dat$Benefit_Label, dat$EnglishProf_Label)
+benefits_lit = table(dat$Benefit_Label, dat$HelpMedLit_Label)
+```
+
+```{r}
+library(plotly)
+
+# Assuming you've defined benefits_gender, benefits_ed, benefits_eng, and benefits_lit tables
+
+# Function to normalize columns in a matrix
+norm_cols <- function(mat) {
+  col_sums <- colSums(mat)
+  mat_normalized <- mat / col_sums[col(mat)]
+  return(mat_normalized)
+}
+
+# Normalize the tables by columns
+benefits_income_norm <- norm_cols(benefits_income)
+benefits_gender_norm <- norm_cols(benefits_gender)
+benefits_ed_norm <- norm_cols(benefits_ed)
+benefits_eng_norm <- norm_cols(benefits_eng)
+benefits_lit_norm <- norm_cols(benefits_lit)
+
+# Create histograms using plot_ly
+plot_income_norm <- plot_ly(z = as.matrix(benefits_income_norm),
+                                  type = "heatmap",
+                                  colorscale = "Viridis",
+                                  x = colnames(benefits_income_norm),
+                                  y = rownames(benefits_income_norm))
+
+
+plot_gender_norm <- plot_ly(z = as.matrix(benefits_gender_norm),
+                                  type = "heatmap",
+                                  colorscale = "Viridis",
+                                  x = colnames(benefits_gender_norm),
+                                  y = rownames(benefits_gender_norm))
+
+plot_ed_norm <- plot_ly(z = as.matrix(benefits_ed_normalized),
+                              type = "heatmap",
+                              colorscale = "Viridis",
+                              x = colnames(benefits_ed_norm),
+                              y = rownames(benefits_ed_norm))
+
+plot_eng_norm<- plot_ly(z = as.matrix(benefits_eng_normalized),
+                               type = "heatmap",
+                               colorscale = "Viridis",
+                               x = colnames(benefits_eng_norm),
+                               y = rownames(benefits_eng_norm))
+
+plot_lit_norm <- plot_ly(z = as.matrix(benefits_lit_normalized),
+                               type = "heatmap",
+                               colorscale = "Viridis",
+                               x = colnames(benefits_lit_norm),
+                               y = rownames(benefits_lit_norm))
+
+# Create facet wrap for normalized histograms
+subplot(
+  plotly_build(plot_income_norm),
+  plotly_build(plot_gender_norm),
+  plotly_build(plot_ed_norm),
+  plotly_build(plot_eng_norm),
+  plotly_build(plot_lit_norm),
+  nrows = 5,
+  margin = 0.05
+)
+
+```
+
+```{r}
+library(plotly)
+library(patchwork)
+
+# Assuming you've defined benefits_gender, benefits_ed, benefits_eng, and benefits_lit tables
+
+# Function to normalize columns in a matrix
+norm_cols <- function(mat) {
+  col_sums <- colSums(mat)
+  mat_normalized <- mat / col_sums[col(mat)]
+  return(mat_normalized)
+}
+
+# Normalize the tables by columns
+benefits_income_norm <- norm_cols(benefits_income)
+benefits_gender_norm <- norm_cols(benefits_gender)
+benefits_ed_norm <- norm_cols(benefits_ed)
+benefits_eng_norm <- norm_cols(benefits_eng)
+benefits_lit_norm <- norm_cols(benefits_lit)
+
+# Create histograms using plot_ly
+plot_income_norm <- plot_ly(z = as.matrix(benefits_income_norm),
+                            type = "heatmap",
+                            colorscale = "Viridis",
+                            x = colnames(benefits_income_norm),
+                            y = rownames(benefits_income_norm))
+
+plot_gender_norm <- plot_ly(z = as.matrix(benefits_gender_norm),
+                            type = "heatmap",
+                            colorscale = "Viridis",
+                            x = colnames(benefits_gender_norm),
+                            y = rownames(benefits_gender_norm))
+
+plot_ed_norm <- plot_ly(z = as.matrix(benefits_ed_norm),
+                        type = "heatmap",
+                        colorscale = "Viridis",
+                        x = colnames(benefits_ed_norm),
+                        y = rownames(benefits_ed_norm))
+
+plot_eng_norm <- plot_ly(z = as.matrix(benefits_eng_norm),
+                         type = "heatmap",
+                         colorscale = "Viridis",
+                         x = colnames(benefits_eng_norm),
+                         y = rownames(benefits_eng_norm))
+
+plot_lit_norm <- plot_ly(z = as.matrix(benefits_lit_norm),
+                         type = "heatmap",
+                         colorscale = "Viridis",
+                         x = colnames(benefits_lit_norm),
+                         y = rownames(benefits_lit_norm))
+
+# Arrange plots on separate rows
+arrange(
+  plot_income_norm + theme(legend.position = "none"),
+  plot_gender_norm + theme(legend.position = "none"),
+  plot_ed_norm + theme(legend.position = "none"),
+  plot_eng_norm + theme(legend.position = "none"),
+  plot_lit_norm + theme(legend.position = "none"),
+  nrow = 5
+)
+
+```
